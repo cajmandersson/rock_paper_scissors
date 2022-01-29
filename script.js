@@ -1,59 +1,59 @@
-const gestures = ['rock', 'paper', 'scissors']
+const gestures = ['rock', 'paper', 'scissors'];
+const buttons = document.querySelectorAll('.btn');
+
+let playerScore = 0;
+let computerScore = 0;
+
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        playRound(gestures[button.id]);
+    });
+});
+
+
 
 function computerPlay() {
     return gestures[Math.floor(Math.random() * gestures.length)]
 }
 
 function playRound(playerSelection) {
-    playerSelection = playerSelection.toLowerCase()
-    const computerSelection = computerPlay()
-    playerIndex = gestures.indexOf(playerSelection)
-    computerIndex = gestures.indexOf(computerSelection)
+    const computerSelection = computerPlay();
+    playerIndex = gestures.indexOf(playerSelection);
+    computerIndex = gestures.indexOf(computerSelection);
 
-    let result
-    if (playerIndex !== computerIndex) {
-        result = (computerIndex === (playerIndex + 1) % 3) ? 'computer' : 'player'
+    let result = [playerIndex, computerIndex]
+
+    if (playerIndex != computerIndex) {
+        result.push((computerIndex == (playerIndex + 1) % 3) ? 'computer' : 'player');
     } else {
-        result = 'tie'
+        result.push('tie');
     }
-    return result
+    updateScore(result);
 }
 
-function game() {
-    let rounds = 5
-    let playerScore = 0
-    let computerScore = 0
+function updateScore(result) {
+    const player = document.querySelector('#playerscore');
+    const computer = document.querySelector('#computerscore');
+    const round = document.querySelector('#playedRound');
+    const winner = document.querySelector('#winner');
 
-    for (let i = 0; i < rounds; i++) {
-        let playerSelection = window.prompt('Rock, Paper or Scissors? ')
-        let computerSelection = computerPlay()
-        let result = playRound(playerSelection, computerSelection)
-
-        switch (result) {
-            case ('player'):
-                console.log('Player Wins Round!')
-                playerScore++
-                break;
-            case ('computer'):
-                console.log('Computer Wins Round!')
-                computerScore++
-                break;
-            case ('tie'):
-                console.log('Tie!')
-                break;
-            default:
-                break;
-        }
-        console.log(rounds - (i + 1) + ' rounds left..')
-    }
-    if (playerScore > computerScore) {
-        console.log('Player won!')
-    } else if (playerScore < computerScore) {
-        console.log('Computer won!')
+    if (result[2] != 'tie') {
+        round.textContent = result[2] + ' wins round! ' + gestures[result[0]] + ' beats ' + gestures[result[1]];
     } else {
-        console.log('Its a tie!')
+        round.textContent = "it's a tie! " + gestures[result[0]] + ' is equal to ' + gestures[result[1]];
+    }
+
+    if (result[2] == 'player') {
+        playerScore++;
+        player.textContent = 'player score: ' + playerScore;
+    } else if (result[2] == 'computer') {
+        computerScore++;
+        computer.textContent = 'computer score: ' + computerScore;
+    } else {
+        return;
+    }
+
+    if (playerScore >= 5 || computerScore >= 5) {
+        winner.textContent = result[2] + ' won!';
     }
 }
-
-game()
-
